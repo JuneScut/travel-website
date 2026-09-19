@@ -1,0 +1,11 @@
+{
+  "name": "travel-journal-prototype",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check src/trips.js && node --check src/app.js && node --check admin/album-state.js && node --check admin/admin.js",
+    "serve": "python3 -m http.server 4173"
+  }
+}

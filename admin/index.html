@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#eae6dc" />
+    <meta name="description" content="旅迹相册管理工作台交互原型。" />
+    <title>相册工作台 · 旅迹 ADMIN</title>
+    <link rel="stylesheet" href="./admin.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#admin-main">跳到相册工作区</a>
+
+    <header class="admin-header">
+      <a class="admin-brand" href="../" aria-label="返回旅迹网站">
+        <span>旅迹</span>
+        <small>ADMIN / ALBUM STUDIO</small>
+      </a>
+      <div class="header-actions">
+        <p class="save-state" id="save-state"><i aria-hidden="true"></i><span>无未保存修改</span></p>
+        <a class="back-link" id="back-to-site" href="../">返回网站 <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main class="admin-layout" id="admin-main">
+      <aside class="trip-panel" aria-labelledby="journey-list-title">
+        <div class="panel-heading">
+          <p class="eyebrow">ARCHIVE / 04</p>
+          <h1 id="journey-list-title">选择旅程</h1>
+        </div>
+        <div class="trip-list" id="trip-list" role="listbox" aria-label="选择要编辑的旅程"></div>
+        <div class="prototype-note">
+          <span aria-hidden="true">◎</span>
+          <p><strong>原型模式</strong>所有改动仅用于本次预览，刷新页面后会恢复。</p>
+        </div>
+      </aside>
+
+      <section class="album-workspace" aria-labelledby="album-title">
+        <header class="album-toolbar">
+          <div>
+            <p class="eyebrow" id="album-kicker">CURRENT JOURNEY / KYOTO</p>
+            <h2 id="album-title">京都相册</h2>
+            <p class="album-meta" id="album-meta">6 张照片 · 1 张封面</p>
+          </div>
+          <label class="add-photo-button" for="photo-input">
+            <span aria-hidden="true">＋</span>
+            添加照片
+          </label>
+          <input
+            class="visually-hidden"
+            id="photo-input"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/avif"
+            multiple
+          />
+        </header>
+
+        <p class="upload-error" id="upload-error" role="alert" hidden></p>
+        <div class="status-message" id="status-message" role="status" aria-live="polite"></div>
+
+        <div class="album-grid" id="album-grid" aria-label="照片编排区"></div>
+
+        <footer class="save-bar">
+          <div>
+            <p>SESSION DRAFT</p>
+            <span>不会上传，也不会改变公开网站</span>
+          </div>
+          <button class="save-button" id="save-preview" type="button" disabled>保存本次预览</button>
+        </footer>
+      </section>
+    </main>
+
+    <dialog class="confirm-dialog" id="delete-dialog" aria-labelledby="delete-title">
+      <form method="dialog">
+        <p class="eyebrow">REMOVE PHOTO</p>
+        <h2 id="delete-title">删除这张照片？</h2>
+        <p id="delete-copy">此操作只影响当前预览。</p>
+        <div class="dialog-actions">
+          <button class="quiet-button" value="cancel">保留照片</button>
+          <button class="danger-button" value="confirm">确认删除</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="confirm-dialog" id="discard-dialog" aria-labelledby="discard-title">
+      <form method="dialog">
+        <p class="eyebrow">UNSAVED CHANGES</p>
+        <h2 id="discard-title">放弃未保存修改？</h2>
+        <p id="discard-copy">切换后，当前旅程的本次修改会恢复。</p>
+        <div class="dialog-actions">
+          <button class="quiet-button" value="cancel">继续编辑</button>
+          <button class="danger-button" value="discard">放弃并继续</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="./admin.js"></script>
+  </body>
+</html>

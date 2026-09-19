@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f2efe8" />
+    <meta name="description" content="旅迹——记录旅行路线与沿途光影的个人网站。" />
+    <title>旅迹 JOURNAL</title>
+    <link rel="stylesheet" href="./styles.css?v=world-map-3" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+    <main id="main-content">
+      <section class="journey-index-section shell" id="top" aria-labelledby="trip-index-title">
+        <div class="trip-index reveal" aria-labelledby="trip-index-title">
+          <div class="trip-index-heading">
+            <p id="trip-index-title">选择一段旅程</p>
+            <p class="keyboard-hint">悬停预览 · ← → 切换</p>
+          </div>
+          <div class="trip-selector" id="trip-selector" role="group" aria-label="选择旅行目的地"></div>
+        </div>
+      </section>
+
+      <section class="trip-section shell reveal" id="footprints" aria-labelledby="trip-title">
+        <div class="route-column">
+          <p class="section-label">足迹 / ROUTE</p>
+          <ol class="route-list" id="route-list"></ol>
+          <p class="route-coords" id="route-coords">35.0116° N · 135.7681° E</p>
+        </div>
+
+        <figure class="featured-photo" id="trip-content">
+          <div class="photo-frame">
+            <img id="trip-hero" src="./assets/kyoto.webp" alt="雨后的京都街道" width="1122" height="1402" />
+            <span class="photo-number" aria-hidden="true">FRAME 01</span>
+          </div>
+          <figcaption id="trip-photo-caption">京都 · 2026</figcaption>
+        </figure>
+
+        <article class="trip-story" aria-live="polite">
+          <p class="eyebrow" id="trip-kicker">FEATURED JOURNEY · KYOTO</p>
+          <h2 id="trip-title">京都 · 雨后的青石路</h2>
+          <time id="trip-date" datetime="2026-04-18">2026.04.18</time>
+          <span class="story-rule" aria-hidden="true"></span>
+          <p id="trip-description">雨停之后，街灯在潮湿的石板路上留下很长的倒影，城市的声音也慢了下来。</p>
+          <div class="journey-controls" aria-label="切换旅程">
+            <button id="previous-trip" type="button" aria-label="上一段旅程">←</button>
+            <span id="trip-position">02 / 04</span>
+            <button id="next-trip" type="button" aria-label="下一段旅程">→</button>
+          </div>
+        </article>
+      </section>
+
+      <section class="gallery-section shell reveal" id="gallery" aria-labelledby="gallery-title">
+        <header>
+          <div>
+            <p class="section-label">相册 / ALBUM</p>
+            <h2 id="gallery-title">沿途光影</h2>
+          </div>
+          <p id="gallery-meta">京都 · 6 张精选</p>
+        </header>
+        <div class="gallery-grid" id="gallery-grid"></div>
+      </section>
+
+      <section class="world-map-section shell reveal" id="world-map" aria-labelledby="world-map-title">
+        <header class="world-map-heading">
+          <div>
+            <p class="section-label">足迹 / WORLD ATLAS</p>
+            <h2 id="world-map-title">世界足迹</h2>
+          </div>
+          <p>04 JOURNEYS · 04 PLACES</p>
+        </header>
+
+        <div class="world-map-stage">
+          <svg class="world-map-art" aria-hidden="true" focusable="false" viewBox="0 0 1200 620" preserveAspectRatio="none" role="presentation">
+            <defs>
+              <pattern id="map-hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(28)">
+                <line x1="0" y1="0" x2="0" y2="9" />
+              </pattern>
+            </defs>
+            <g class="map-grid">
+              <path d="M0 103.3H1200M0 206.6H1200M0 310H1200M0 413.3H1200M0 516.6H1200" />
+              <path d="M200 0V620M400 0V620M600 0V620M800 0V620M1000 0V620" />
+            </g>
+            <g class="map-land">
+              <path d="M89 146l34-47 77-34 73 12 36 31 43 1 44 43-17 28-40 2-27 28-39 13-23 51-26 8-20-31-34-17-17-38-37-20z" />
+              <path d="M330 298l49 4 34 31 11 56-24 42-10 69-33 70-18-8-6-64-22-46-13-58 18-50z" />
+              <path d="M523 145l39-31 50 6 30 26 51-15 43 8 35-24 106 10 70 41 93 20 61 39-9 46-72 25-65-9-57 31-77-2-47-35-45 8-35-30-42 12-42-25-53-13-40-45z" />
+              <path d="M571 281l61-7 55 31 25 54-15 50-28 17-19 67-38 42-29-39-5-59-28-37-18-63 19-31z" />
+              <path d="M954 425l45-33 64 12 35 38-15 47-58 16-64-26z" />
+              <path d="M438 72l34-36 51 8 15 37-35 31-51-5z" />
+              <path d="M91 563l128-13 123 14 117-9 136 14 134-16 142 14 129-11 129 18-31 24H123z" />
+            </g>
+            <g class="map-hatching">
+              <path d="M89 146l34-47 77-34 73 12 36 31 43 1 44 43-17 28-40 2-27 28-39 13-23 51-26 8-20-31-34-17-17-38-37-20z" />
+              <path d="M523 145l39-31 50 6 30 26 51-15 43 8 35-24 106 10 70 41 93 20 61 39-9 46-72 25-65-9-57 31-77-2-47-35-45 8-35-30-42 12-42-25-53-13-40-45z" />
+              <path d="M571 281l61-7 55 31 25 54-15 50-28 17-19 67-38 42-29-39-5-59-28-37-18-63 19-31z" />
+            </g>
+          </svg>
+          <div class="map-markers" id="map-markers" aria-label="选择地图上的旅行足迹"></div>
+          <p class="map-instruction" id="map-instruction">选择标记 · 回到这段旅程</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer shell" id="about">
+      <p>© 2026 旅迹 JOURNAL</p>
+      <p>记录 · 探索 · 珍藏</p>
+      <p id="footer-coords">35.0116° N · 135.7681° E</p>
+    </footer>
+
+    <dialog class="lightbox" id="lightbox" aria-labelledby="lightbox-caption">
+      <div class="lightbox-toolbar">
+        <span id="lightbox-count">01 / 06</span>
+        <button class="icon-button" id="close-lightbox" type="button" aria-label="关闭相册预览">×</button>
+      </div>
+      <div class="lightbox-media">
+        <button class="lightbox-arrow" id="previous-photo" type="button" aria-label="上一张照片">←</button>
+        <img id="lightbox-image" alt="" />
+        <button class="lightbox-arrow" id="next-photo" type="button" aria-label="下一张照片">→</button>
+      </div>
+      <p id="lightbox-caption"></p>
+    </dialog>
+
+    <script type="module" src="./src/app.js?v=world-map-2"></script>
+  </body>
+</html>
