@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept A · Par Avion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Noto+Serif+SC:wght@400;600;900&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --envelope: #f4ead8;
+    --envelope-deep: #eadbc1;
+    --ink: #1a2150;
+    --ink-soft: #5b5f7e;
+    --red: #e2392b;
+    --blue: #2348c6;
+    --kyoto: #e4572e;
+    --lisbon: #f2b43a;
+    --iceland: #3e86d6;
+    --paris: #7a4fb0;
+    --serif-zh: 'Noto Serif SC', 'Songti SC', serif;
+    --serif: 'Instrument Serif', 'Noto Serif SC', serif;
+    --type: 'Courier Prime', monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--envelope); color: var(--ink); font-family: var(--serif-zh); overflow-x: hidden; }
+  body::after { content: ''; position: fixed; inset: 0; pointer-events: none; opacity: .07; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  /* airmail edge */
+  .airmail { height: 14px; background: repeating-linear-gradient(-45deg, var(--red) 0 22px, var(--envelope) 22px 34px, var(--blue) 34px 56px, var(--envelope) 56px 68px); }
+
+  .masthead { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 22px 56px; font: 400 12px/1 var(--type); letter-spacing: .14em; text-transform: uppercase; }
+  .masthead nav { display: flex; gap: 28px; justify-self: end; }
+  .brand { display: flex; align-items: baseline; gap: 10px; font: 900 22px/1 var(--serif-zh); letter-spacing: .02em; text-transform: none; }
+  .brand em { font: italic 400 22px/1 var(--serif); }
+  .par-avion { justify-self: center; border: 1.5px solid var(--blue); color: var(--blue); padding: 7px 12px 6px; font-weight: 700; }
+
+  .hero { position: relative; display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; padding: 30px 56px 0; min-height: 700px; }
+  .hero-copy { padding-top: 46px; position: relative; z-index: 2; }
+  .kicker { font: 700 12px/1 var(--type); letter-spacing: .2em; color: var(--red); text-transform: uppercase; display: flex; gap: 14px; align-items: center; }
+  .kicker::before { content: ''; width: 34px; height: 1.5px; background: currentColor; }
+  h1 { margin: 26px 0 0; font: 900 clamp(150px, 15vw, 232px)/.86 var(--serif-zh); letter-spacing: -.04em; }
+  h1 .latin { display: block; margin-top: 18px; font: italic 400 clamp(54px, 5.4vw, 84px)/1 var(--serif); letter-spacing: -.01em; color: var(--blue); }
+  .lede { margin: 38px 0 0; max-width: 22.5em; text-wrap: pretty; font-size: 18px; line-height: 1.95; color: var(--ink-soft); }
+  .meta-row { margin-top: 40px; display: flex; gap: 46px; font: 400 12px/1.6 var(--type); letter-spacing: .1em; text-transform: uppercase; }
+  .meta-row b { display: block; font: 400 30px/1 var(--serif); letter-spacing: 0; text-transform: none; color: var(--ink); margin-top: 6px; }
+
+  /* stamp */
+  .stamp-wrap { filter: drop-shadow(0 18px 26px rgba(26, 33, 80, .22)) drop-shadow(0 2px 3px rgba(26,33,80,.18)); }
+  .stamp {
+    --r: 7px;
+    position: relative; background: #fffaf0; padding: 22px;
+    -webkit-mask:
+      radial-gradient(var(--r), #0000 97%, #000) round calc(-1.5 * var(--r)) calc(-1.5 * var(--r)) / calc(3 * var(--r)) calc(3 * var(--r)),
+      linear-gradient(#000 0 0) no-repeat 50% / calc(100% - 3 * var(--r)) calc(100% - 3 * var(--r));
+    mask:
+      radial-gradient(var(--r), #0000 97%, #000) round calc(-1.5 * var(--r)) calc(-1.5 * var(--r)) / calc(3 * var(--r)) calc(3 * var(--r)),
+      linear-gradient(#000 0 0) no-repeat 50% / calc(100% - 3 * var(--r)) calc(100% - 3 * var(--r));
+  }
+  .stamp-inner { position: relative; background: var(--c); padding: 14px 14px 0; height: 100%; display: flex; flex-direction: column; }
+  .stamp-inner img { width: 100%; flex: 1; min-height: 0; object-fit: cover; display: block; filter: saturate(1.15) contrast(1.05); }
+  .stamp-foot { display: flex; justify-content: space-between; align-items: baseline; padding: 12px 2px 12px; color: #fffaf0; }
+  .stamp-foot .country { font: 700 12px/1 var(--type); letter-spacing: .22em; }
+  .stamp-foot .value { font: italic 400 46px/.8 var(--serif); }
+
+  .hero-stamp { position: absolute; right: 120px; top: 34px; width: 430px; height: 560px; transform: rotate(3.5deg); }
+  .hero-stamp .stamp { height: 100%; }
+  .stamp-back { position: absolute; right: 36px; top: 300px; width: 230px; height: 290px; transform: rotate(-9deg); z-index: 0; }
+  .stamp-back .stamp { height: 100%; padding: 14px; --r: 5px; }
+  .stamp-back .stamp-foot .value { font-size: 30px; }
+
+  .postmark { position: absolute; right: 330px; top: 575px; width: 300px; z-index: 3; color: var(--ink); mix-blend-mode: multiply; opacity: .82; transform: rotate(-14deg); }
+  .postmark text { font: 700 13px var(--type); letter-spacing: .24em; fill: currentColor; }
+
+  .airmail-label { position: absolute; left: 54%; top: 470px; z-index: 3; background: var(--blue); color: #fff; font: 700 13px/1 var(--type); letter-spacing: .2em; padding: 10px 14px; transform: rotate(-2deg); box-shadow: 0 6px 14px rgba(26,33,80,.2); }
+  .airmail-label span { display: block; font: italic 400 22px/1 var(--serif); letter-spacing: 0; margin-top: 4px; }
+
+  /* selector: sheet of stamps */
+  .sheet { margin: 70px 56px 0; border-top: 1.5px dashed rgba(26,33,80,.35); padding-top: 34px; display: grid; grid-template-columns: 220px repeat(4, 1fr); gap: 28px; align-items: end; }
+  .sheet-title { font: 400 12px/1.7 var(--type); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); align-self: start; }
+  .sheet-title b { display: block; font: 900 30px/1.2 var(--serif-zh); color: var(--ink); letter-spacing: 0; text-transform: none; margin-bottom: 8px; }
+  .mini { display: grid; grid-template-columns: 112px 1fr; gap: 18px; align-items: end; cursor: pointer; }
+  .mini .stamp { --r: 4px; padding: 10px; height: 138px; }
+  .mini .stamp-inner { padding: 7px 7px 0; }
+  .mini .stamp-foot { padding: 6px 1px; }
+  .mini .stamp-foot .country { font-size: 7px; }
+  .mini .stamp-foot .value { font-size: 18px; }
+  .mini-label { font: 400 11px/1.6 var(--type); letter-spacing: .12em; color: var(--ink-soft); text-transform: uppercase; padding-bottom: 6px; }
+  .mini-label strong { display: block; font: 600 22px/1.3 var(--serif-zh); color: var(--ink); letter-spacing: 0; text-transform: none; }
+  .mini.is-active .stamp-wrap { transform: translateY(-10px) rotate(-3deg); }
+  .mini.is-active .mini-label strong::after { content: ' ●'; color: var(--red); font-size: 12px; vertical-align: middle; }
+
+  /* letter section */
+  .letter { margin: 110px 56px 0; display: grid; grid-template-columns: 1fr 1.3fr; gap: 80px; padding: 70px 0 120px; border-top: 1.5px solid var(--ink); position: relative; }
+  .letter-route ol { list-style: none; margin: 30px 0 0; padding: 0; counter-reset: r; }
+  .letter-route li { display: grid; grid-template-columns: 56px 1fr auto; align-items: center; padding: 18px 0; border-bottom: 1px solid rgba(26,33,80,.18); counter-increment: r; }
+  .letter-route li::before { content: counter(r, decimal-leading-zero); font: italic 400 26px/1 var(--serif); color: var(--red); }
+  .letter-route strong { font: 600 24px/1 var(--serif-zh); }
+  .letter-route span { font: 400 12px/1 var(--type); letter-spacing: .14em; color: var(--ink-soft); }
+  .letter-body { background: #fffaf0; padding: 56px 60px; position: relative; box-shadow: 0 1px 0 rgba(26,33,80,.1), 0 24px 50px -24px rgba(26,33,80,.3);
+    background-image: repeating-linear-gradient(transparent 0 39px, rgba(35,72,198,.14) 39px 40px); background-position: 0 53px; }
+  .letter-body::before { content: ''; position: absolute; inset: 0; border: 10px solid transparent; border-image: repeating-linear-gradient(-45deg, var(--red) 0 14px, #fffaf0 14px 20px, var(--blue) 20px 34px, #fffaf0 34px 40px) 10; pointer-events: none; }
+  .letter-body p { margin: 0; font: 400 21px/40px var(--serif-zh); }
+  .letter-body p + p { margin-top: 40px; }
+  .letter-body .sign { margin-top: 24px; text-align: right; font: italic 400 34px/40px var(--serif); color: var(--blue); }
+  .section-label { font: 700 12px/1 var(--type); letter-spacing: .2em; text-transform: uppercase; color: var(--red); }
+  h2 { margin: 18px 0 0; font: 900 64px/1.05 var(--serif-zh); letter-spacing: -.02em; }
+  h2 em { font: italic 400 64px/1 var(--serif); color: var(--blue); }
+  .mini { appearance: none; border: 0; background: none; padding: 0; text-align: left; color: inherit; font: inherit; }
+  .mini .stamp-wrap { transition: transform 500ms cubic-bezier(.22,1,.36,1); }
+  .mini:hover .stamp-wrap { transform: translateY(-6px) rotate(2deg); }
+  .mini:focus-visible { outline: 2px solid var(--blue); outline-offset: 8px; }
+  .hero-stamp .stamp-inner, .mini .stamp-inner { transition: background-color 400ms ease; }
+</style>
+</head>
+<body>
+  <div class="airmail"></div>
+  <header class="masthead">
+    <div class="brand">旅迹 <em>Journal</em></div>
+    <div class="par-avion">Par Avion · 航空</div>
+    <nav><span>Journeys</span><span>Album</span><span>Atlas</span></nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-copy" id="copy">
+      <p class="kicker" id="kicker"></p>
+      <h1><span id="city"></span><span class="latin" id="en"></span></h1>
+      <p class="lede" id="lede"></p>
+      <div class="meta-row">
+        <div>Posted<b id="posted"></b></div>
+        <div>Stops<b id="stops"></b></div>
+        <div>Latitude<b id="lat"></b></div>
+      </div>
+    </div>
+
+    <div class="stamp-back stamp-wrap" id="back"></div>
+    <div class="hero-stamp stamp-wrap" id="hero"></div>
+
+    <svg class="postmark" id="postmark" viewBox="0 0 300 140" aria-hidden="true">
+      <defs><path id="ring" d="M70 70 m-52 0 a52 52 0 1 1 104 0 a52 52 0 1 1 -104 0" /></defs>
+      <circle cx="70" cy="70" r="64" fill="none" stroke="currentColor" stroke-width="2.4" />
+      <circle cx="70" cy="70" r="40" fill="none" stroke="currentColor" stroke-width="1.4" />
+      <text><textPath href="#ring" id="ring-text"></textPath></text>
+      <text x="70" y="66" text-anchor="middle" style="font-size:15px;letter-spacing:.08em" id="pm-day"></text>
+      <text x="70" y="86" text-anchor="middle" style="font-size:15px;letter-spacing:.08em" id="pm-year"></text>
+      <g fill="none" stroke="currentColor" stroke-width="2.4">
+        <path d="M140 42 q12 -10 24 0 t24 0 t24 0 t24 0 t24 0 t24 0" />
+        <path d="M140 62 q12 -10 24 0 t24 0 t24 0 t24 0 t24 0 t24 0" />
+        <path d="M140 82 q12 -10 24 0 t24 0 t24 0 t24 0 t24 0 t24 0" />
+        <path d="M140 102 q12 -10 24 0 t24 0 t24 0 t24 0 t24 0 t24 0" />
+      </g>
+    </svg>
+
+    <div class="airmail-label">BY AIR MAIL<span>par avion</span></div>
+  </section>
+
+  <section class="sheet" aria-label="选择旅程">
+    <div class="sheet-title"><b>四枚邮票</b>Choose a journey<br />← → to browse</div>
+    <div id="minis" style="display: contents"></div>
+  </section>
+
+  <section class="letter">
+    <div class="letter-route">
+      <p class="section-label">Itinerary · 足迹</p>
+      <h2>沿途 <em>stops</em></h2>
+      <ol id="route"></ol>
+    </div>
+    <div class="letter-body">
+      <p id="letter"></p>
+      <p id="letter-2"></p>
+      <p class="sign" id="sign"></p>
+    </div>
+  </section>
+
+  <script type="module">
+    import { journeys, createSelector, animate, pad } from './shared.js';
+
+    const colors = { lisbon: 'var(--lisbon)', kyoto: 'var(--kyoto)', iceland: 'var(--iceland)', paris: 'var(--paris)' };
+    const $ = (id) => document.getElementById(id);
+    const stamp = (t, value = t.value, short = false) => `<div class="stamp"><div class="stamp-inner" style="--c:${colors[t.id]}"><img src="${t.hero}" alt="" /><div class="stamp-foot"><span class="country">${short ? t.postal.split(' · ')[0] : t.postal}</span><span class="value">${value}</span></div></div></div>`;
+
+    $('minis').innerHTML = journeys.map((t, i) => `
+      <button class="mini" type="button" data-pick="${i}" aria-label="查看${t.city}">
+        <div class="stamp-wrap">${stamp(t, t.value, true)}</div>
+        <div class="mini-label"><strong>${t.city}</strong>${t.latin} · ${t.shortDate}</div>
+      </button>`).join('');
+
+    createSelector((t, i) => {
+      const next = journeys[(i + 1) % journeys.length];
+      $('kicker').textContent = `No. ${pad(i + 1)} · From ${t.latin[0] + t.latin.slice(1).toLowerCase()}`;
+      $('city').textContent = t.city;
+      $('en').textContent = t.en;
+      $('lede').textContent = t.description;
+      $('posted').textContent = t.posted;
+      $('stops').textContent = `${t.route.length} places`;
+      $('lat').textContent = t.lat;
+      $('hero').innerHTML = stamp(t, t.value);
+      $('hero').querySelector('img').alt = `${t.city} · ${t.title}`;
+      $('back').innerHTML = stamp(next, next.value, true);
+      $('ring-text').textContent = `${t.latin} · ${t.city} · ${t.country} · ${t.date.slice(0, 4)} ·`;
+      $('pm-day').textContent = t.roman;
+      $('pm-year').textContent = t.date.slice(0, 4);
+      $('route').innerHTML = t.route.map(([place, date]) => `<li><strong>${place}</strong><span>${date}</span></li>`).join('');
+      $('letter').textContent = t.description;
+      $('letter-2').textContent = `${t.title}。从${t.route[0][0]}出发，一路经过${t.route.slice(1).map(([p]) => p).join('、')}，把这一段寄给以后的自己。`;
+      $('sign').textContent = `— from ${t.latin[0] + t.latin.slice(1).toLowerCase()}, ${t.roman.replace(' ', '.')}`;
+      document.querySelectorAll('.mini').forEach((m, k) => m.classList.toggle('is-active', k === i));
+
+      animate($('hero'), [{ opacity: 0, transform: 'translateY(-40px) rotate(-6deg) scale(1.06)' }, { opacity: 1, transform: 'rotate(3.5deg)' }], { duration: 700 });
+      animate($('back'), [{ opacity: 0, transform: 'translateX(40px) rotate(-2deg)' }, { opacity: 1, transform: 'rotate(-9deg)' }], { duration: 800, delay: 80, fill: 'backwards' });
+      animate($('postmark'), [{ opacity: 0, transform: 'rotate(-14deg) scale(1.5)' }, { opacity: .82, transform: 'rotate(-14deg) scale(1)' }], { duration: 260, delay: 520, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'backwards' });
+      animate($('copy'), [{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }], { duration: 600 });
+    });
+  </script>
+</body>
+</html>

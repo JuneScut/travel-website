@@ -1,0 +1,7 @@
+export type Photo = { id: string; mediaKey: string; mediaVersion: number; title: string; alt: string; focalX: number; focalY: number; status: string; originalName: string; deletedAt: string | null };
+export type Journey = { id: string; slug: string; city: string; latin: string; country: string; title: string; description: string; startDate: string; endDate: string; latitude: number | null; longitude: number | null; revision: number; status: 'draft' | 'published' | 'archived'; deletedAt: string | null; stops: { name: string; date: string; latitude: number | null; longitude: number | null }[]; album: { coverPhotoId: string | null; photos: Photo[] } | null };
+export type Draft = { slug: string; city: string; latin: string; country: string; title: string; description: string; startDate: string; endDate: string; latitude: number | null; longitude: number | null; stops: { name: string; date: string; latitude: number | null; longitude: number | null }[] };
+export const blankDraft = (): Draft => ({ slug: `journey-${Date.now().toString(36)}`, city: '', latin: '', country: '', title: '', description: '', startDate: '', endDate: '', latitude: null, longitude: null, stops: [] });
+export function journeyDraft(row: Journey): Draft {
+  return { slug: row.slug, city: row.city, latin: row.latin, country: row.country, title: row.title, description: row.description, startDate: row.startDate.slice(0, 10), endDate: row.endDate.slice(0, 10), latitude: row.latitude, longitude: row.longitude, stops: row.stops.map(stop => ({ ...stop, date: stop.date.slice(0, 10) })) };
+}

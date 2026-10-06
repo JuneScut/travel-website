@@ -1,0 +1,16 @@
+node_modules
+.next
+.next-dev
+dist
+.git
+.env
+.env.*
+!.env.example
+!.env.production.example
+.data
+backups
+test-results
+playwright-report
+generated
+*.tsbuildinfo
+.worktrees

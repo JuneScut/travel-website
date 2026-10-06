@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept B · Riso Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Noto+Serif+SC:wght@500;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #f4efe4;
+    --pink: #ff4fa8;
+    --blue: #1f57d6;
+    --yellow: #ffd43b;
+    --teal: #00a28a;
+    --orange: #ff6b35;
+    --ink: #1c1f3a;
+    --a: var(--blue);   /* main ink — swaps per trip */
+    --b: var(--pink);   /* spot ink */
+    --sun: var(--yellow);
+    --display: 'Gloock', 'Noto Serif SC', serif;
+    --zh: 'Noto Serif SC', 'Songti SC', serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--zh); overflow-x: hidden; }
+  body::after { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: .1; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  .top { display: flex; justify-content: space-between; align-items: center; padding: 22px 48px; font: 600 11px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; border-bottom: 2px solid var(--ink); }
+  .top .brand { font: 900 20px/1 var(--zh); letter-spacing: .1em; }
+  .top nav { display: flex; gap: 8px; }
+  .top nav span { padding: 8px 12px; border-radius: 99px; border: 1.5px solid var(--ink); }
+  .top nav span.on { background: var(--pink); border-color: var(--pink); color: var(--paper); }
+  .issue { display: flex; gap: 18px; }
+  .issue i { width: 14px; height: 14px; border-radius: 50%; display: inline-block; mix-blend-mode: multiply; }
+
+  /* hero poster */
+  .poster { position: relative; height: 780px; overflow: hidden; border-bottom: 2px solid var(--ink); }
+  .sun { position: absolute; width: 620px; height: 620px; border-radius: 50%; left: 50%; top: 70px; transform: translateX(-34%);
+    background: radial-gradient(circle, var(--sun) 0 1.8px, transparent 2.3px) 0 0 / 7px 7px, transparent; mix-blend-mode: multiply; }
+  .sun::after { content: ''; position: absolute; inset: 70px; border-radius: 50%; background: var(--sun); transition: background-color 500ms ease; mix-blend-mode: multiply; }
+
+  .giant { position: absolute; left: 32px; right: 32px; bottom: -58px; margin: 0; font: 400 352px/1 var(--display); letter-spacing: -.045em; color: var(--a); mix-blend-mode: multiply; white-space: nowrap; transition: color 500ms ease; }
+  .giant.ghost { color: var(--b); transform: translate(9px, -6px); }
+
+  .vert { position: absolute; left: 56px; top: 58px; writing-mode: vertical-rl; font: 900 150px/1 var(--zh); letter-spacing: .04em; color: var(--b); mix-blend-mode: multiply; margin: 0; transition: color 500ms ease; }
+  .vert small { font: 500 20px/1.8 var(--zh); letter-spacing: .3em; color: var(--ink); margin-top: 26px; display: block; mix-blend-mode: normal; }
+
+  .duo { position: relative; background: var(--d1, var(--blue)); overflow: hidden; }
+  .duo img { display: block; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.35) brightness(1.25); mix-blend-mode: screen; }
+  .duo::after { content: ''; position: absolute; inset: 0; background: var(--d2, var(--pink)); mix-blend-mode: multiply; }
+  .duo::before { content: ''; position: absolute; inset: 0; z-index: 2; opacity: .35; mix-blend-mode: multiply; background: radial-gradient(circle, rgba(0,0,0,.5) 0 .9px, transparent 1.3px) 0 0 / 4px 4px; }
+
+  .stamp-wrap { filter: drop-shadow(0 16px 24px rgba(28,31,58,.28)) drop-shadow(0 2px 2px rgba(28,31,58,.2)); }
+  .stamp { --r: 7px; background: var(--paper); padding: 20px;
+    -webkit-mask: radial-gradient(var(--r), #0000 97%, #000) round calc(-1.5 * var(--r)) calc(-1.5 * var(--r)) / calc(3 * var(--r)) calc(3 * var(--r)), linear-gradient(#000 0 0) no-repeat 50% / calc(100% - 3 * var(--r)) calc(100% - 3 * var(--r));
+    mask: radial-gradient(var(--r), #0000 97%, #000) round calc(-1.5 * var(--r)) calc(-1.5 * var(--r)) / calc(3 * var(--r)) calc(3 * var(--r)), linear-gradient(#000 0 0) no-repeat 50% / calc(100% - 3 * var(--r)) calc(100% - 3 * var(--r)); }
+  .stamp-face { position: relative; border: 2px solid var(--ink); height: 100%; display: grid; grid-template-rows: 1fr auto; }
+  .stamp-face .duo { border-bottom: 2px solid var(--ink); }
+  .stamp-cap { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--paper); }
+  .stamp-cap b { font: 600 11px/1 var(--mono); letter-spacing: .2em; }
+  .stamp-cap span { font: 400 40px/.8 var(--display); color: var(--b); }
+
+  .hero-stamp { position: absolute; left: 50%; top: 66px; width: 380px; height: 500px; transform: translateX(-50%) rotate(-4deg); z-index: 3; }
+  .hero-stamp .stamp { height: 100%; }
+
+  .side { position: absolute; right: 56px; top: 92px; width: 300px; z-index: 4; }
+  .side .tag { display: inline-block; background: var(--ink); color: var(--paper); font: 600 11px/1 var(--mono); letter-spacing: .18em; padding: 8px 10px; transform: rotate(2deg); }
+  .side h2 { margin: 22px 0 14px; font: 900 40px/1.25 var(--zh); text-wrap: balance; }
+  .side p { margin: 0; font: 500 16px/1.95 var(--zh); }
+  .side .num { margin-top: 26px; display: flex; gap: 10px; align-items: baseline; white-space: nowrap; font: 600 11px/1 var(--mono); letter-spacing: .14em; }
+  .side .num b { font: 400 64px/.8 var(--display); color: var(--a); }
+
+  .sticker { position: absolute; z-index: 5; left: calc(50% + 118px); top: 18px; width: 132px; height: 132px; border-radius: 50%; background: var(--orange); color: var(--paper); display: grid; place-items: center; text-align: center; transform: rotate(12deg); font: 600 10px/1.5 var(--mono); letter-spacing: .14em; }
+  .sticker b { display: block; font: 400 40px/1 var(--display); letter-spacing: 0; }
+
+  /* stamp strip selector */
+  .strip { display: grid; grid-template-columns: 260px repeat(4, 1fr); border-bottom: 2px solid var(--ink); }
+  .strip .lead { padding: 30px 26px; border-right: 2px solid var(--ink); }
+  #cells { display: contents; }
+  .strip .lead { font: 600 11px/1.7 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
+  .strip .lead b { display: block; font: 400 44px/1 var(--display); letter-spacing: -.01em; text-transform: none; margin-bottom: 14px; color: var(--a); }
+  .cell { display: grid; grid-template-columns: 104px 1fr; gap: 18px; align-items: center; }
+  .cell .stamp-wrap { filter: drop-shadow(0 8px 12px rgba(28,31,58,.25)); }
+  .cell .stamp { --r: 4px; padding: 9px; height: 128px; }
+  .cell .stamp-cap { padding: 4px 6px; }
+  .cell .stamp-cap b { font-size: 6px; }
+  .cell .stamp-cap span { font-size: 18px; }
+  .cell h3 { margin: 0; font: 900 26px/1.1 var(--zh); }
+  .cell p { margin: 8px 0 0; font: 600 10px/1.6 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
+  .cell { appearance: none; border: 0; border-right: 2px solid var(--ink); background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; padding: 30px 26px; transition: background-color 300ms ease; }
+  .cell:last-child { border-right: 0; }
+  .cell:hover { background: rgba(28,31,58,.05); }
+  .cell .stamp-wrap { transition: transform 450ms cubic-bezier(.22,1,.36,1); }
+  .cell:hover .stamp-wrap, .cell.on .stamp-wrap { transform: rotate(-5deg) translateY(-4px); }
+  .cell:focus-visible { outline: 3px solid var(--ink); outline-offset: -6px; }
+  .cell.on { background: var(--sun); }
+  .cell .chip { display: inline-flex; gap: 4px; margin-top: 10px; }
+  .cell .chip i { width: 12px; height: 12px; border-radius: 50%; }
+
+  /* route */
+  .route { display: grid; grid-template-columns: 1fr 1fr; min-height: 560px; border-bottom: 2px solid var(--ink); }
+  .route-art { position: relative; border-right: 2px solid var(--ink); background: var(--a); transition: background-color 500ms ease; overflow: hidden; }
+  .route-art svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .route-text { padding: 56px 56px; }
+  .route-text .label { font: 600 11px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--b); }
+  .route-text h2 { margin: 18px 0 30px; font: 400 92px/.92 var(--display); letter-spacing: -.03em; }
+  .route-text h2 span { display: block; margin-top: 14px; font: 900 56px/1.15 var(--zh); text-wrap: balance; color: var(--b); mix-blend-mode: multiply; }
+  .stops { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border-top: 2px solid var(--ink); }
+  .stops div { padding: 20px 0; border-bottom: 2px solid var(--ink); display: flex; gap: 16px; align-items: baseline; }
+  .stops div:nth-child(odd) { border-right: 2px solid var(--ink); }
+  .stops div:nth-child(even) { padding-left: 22px; }
+  .stops b { font: 400 34px/1 var(--display); color: var(--a); }
+  .stops strong { font: 900 24px/1 var(--zh); }
+  .stops span { font: 600 10px/1 var(--mono); letter-spacing: .14em; margin-left: auto; padding-right: 18px; }
+</style>
+</head>
+<body>
+  <header class="top">
+    <span class="brand">旅迹</span>
+    <span class="issue">Riso Atlas · Issue 04 <span><i style="background:var(--b)"></i> <i style="background:var(--a)"></i> <i style="background:var(--sun)"></i></span></span>
+    <nav><span class="on">旅程</span><span>相册</span><span>地图</span></nav>
+  </header>
+
+  <section class="poster">
+    <div class="sun" id="sun"></div>
+    <p class="vert" id="vert"></p>
+    <p class="giant ghost" id="ghost" aria-hidden="true"></p>
+    <p class="giant" id="giant"></p>
+
+    <div class="hero-stamp stamp-wrap" id="hero"></div>
+
+    <div class="sticker" id="sticker"></div>
+
+    <aside class="side" id="side">
+      <span class="tag" id="tag"></span>
+      <h2 id="title"></h2>
+      <p id="desc"></p>
+      <div class="num"><b id="day"></b><span id="year"></span></div>
+    </aside>
+  </section>
+
+  <section class="strip" aria-label="选择旅程">
+    <div class="lead"><b>Pick a stamp</b>4 journeys · ← →</div>
+    <div id="cells"></div>
+  </section>
+
+  <section class="route">
+    <div class="route-art">
+      <svg viewBox="0 0 700 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs><pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r="1.6" style="fill: var(--b)" /></pattern></defs>
+        <path d="M380 40 C 520 80 600 180 560 260 S 420 340 470 430 S 600 520 640 560 L 700 560 L 700 0 L 330 0 Z" fill="url(#dots)" />
+        <path id="route-line" d="M120 120 C 220 140 260 220 330 250 S 440 300 470 390 S 560 470 600 480" fill="none" style="stroke: var(--sun)" stroke-width="5" stroke-dasharray="2 14" stroke-linecap="round" />
+        <g font-family="Gloock" font-size="30" fill="#1c1f3a">
+          <circle cx="120" cy="120" r="30" style="fill: var(--sun)" /><text x="120" y="131" text-anchor="middle">1</text>
+          <circle cx="330" cy="250" r="30" fill="#f4efe4" /><text x="330" y="261" text-anchor="middle">2</text>
+          <circle cx="470" cy="390" r="30" fill="#f4efe4" /><text x="470" y="401" text-anchor="middle">3</text>
+          <circle cx="600" cy="480" r="30" fill="#f4efe4" /><text x="600" y="491" text-anchor="middle">4</text>
+        </g>
+        <text id="coords" x="40" y="520" font-family="IBM Plex Mono" font-size="13" letter-spacing="3" fill="#f4efe4"></text>
+      </svg>
+    </div>
+    <div class="route-text">
+      <p class="label">Route · 足迹</p>
+      <h2>Four stops, <span id="route-title"></span></h2>
+      <div class="stops" id="stops"></div>
+    </div>
+  </section>
+
+  <script type="module">
+    import { journeys, createSelector, animate, pad } from './shared.js';
+
+    // Two-ink pairs per trip: a = main ink, b = spot ink, sun = flat fill, duo = photo duotone.
+    const inks = {
+      lisbon: { a: '#1f57d6', b: '#00a28a', sun: '#ffd43b', duo: ['#1f57d6', '#fff0a0'] },
+      kyoto: { a: '#1f57d6', b: '#ff4fa8', sun: '#ffd43b', duo: ['#1f57d6', '#ff9ccc'] },
+      iceland: { a: '#1c1f3a', b: '#2fa8ff', sun: '#a8e2ff', duo: ['#1c1f3a', '#7fd3ff'] },
+      paris: { a: '#6a2bb0', b: '#ff6b35', sun: '#ffb0c8', duo: ['#6a2bb0', '#ffa07a'], lift: 1.9 },
+    };
+    const $ = (id) => document.getElementById(id);
+    const title = (s) => s[0] + s.slice(1).toLowerCase();
+    const days = (t) => {
+      const [from, to] = t.dateRange.split(' — ').map((d) => new Date(`${t.date.slice(0, 4)}-${d.replace('.', '-')}`));
+      return Math.round((to - from) / 864e5) + 1;
+    };
+    const stamp = (t, cap) => {
+      const ink = inks[t.id];
+      const lift = ink.lift ? ` style="filter:grayscale(1) contrast(1.2) brightness(${ink.lift})"` : '';
+      return `<div class="stamp"><div class="stamp-face"><div class="duo" style="--d1:${ink.duo[0]}; --d2:${ink.duo[1]}"><img src="${t.hero}" alt=""${lift} /></div><div class="stamp-cap"><b>${cap}</b><span>${t.value}</span></div></div></div>`;
+    };
+
+    $('cells').innerHTML = journeys.map((t, i) => `
+      <button class="cell" type="button" data-pick="${i}" aria-label="查看${t.city}">
+        <div class="stamp-wrap">${stamp(t, t.code)}</div>
+        <div><h3>${t.city}</h3><p>${title(t.latin)} · ${t.shortDate.replace('/', '.')}</p>
+        <span class="chip"><i style="background:${inks[t.id].a}"></i><i style="background:${inks[t.id].b}"></i></span></div>
+      </button>`).join('');
+
+    createSelector((t, i) => {
+      const ink = inks[t.id];
+      const root = document.documentElement.style;
+      root.setProperty('--a', ink.a);
+      root.setProperty('--b', ink.b);
+      root.setProperty('--sun', ink.sun);
+
+      $('vert').innerHTML = `${t.city}<small>${t.country} · ${t.dateRange}</small>`;
+      $('giant').textContent = $('ghost').textContent = title(t.latin);
+      $('hero').innerHTML = stamp(t, t.postal);
+      $('hero').querySelector('img').alt = `${t.city} · ${t.title}`;
+      $('sticker').innerHTML = `<div><b>${pad(t.route.length)}</b>stops<br />${days(t)} days</div>`;
+      $('tag').textContent = `FEATURED · ${pad(i + 1)} / ${pad(journeys.length)}`;
+      $('title').textContent = t.title;
+      $('desc').textContent = t.description;
+      $('day').textContent = t.date.slice(5);
+      $('year').textContent = `${t.date.slice(0, 4)} · ${t.lat}`;
+      $('coords').textContent = t.coords;
+      $('route-title').textContent = `${t.route[0][0]} → ${t.route.at(-1)[0]}`;
+      $('stops').innerHTML = t.route.map(([place, date], k) => `<div><b>${pad(k + 1)}</b><strong>${place}</strong><span>${date}</span></div>`).join('');
+      document.querySelectorAll('.cell').forEach((c, k) => c.classList.toggle('on', k === i));
+
+      // Print-run feel: inks land one plate at a time.
+      animate($('giant'), [{ transform: 'translateX(-60px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 700 });
+      animate($('ghost'), [{ transform: 'translate(60px, -6px)', opacity: 0 }, { transform: 'translate(9px, -6px)', opacity: 1 }], { duration: 800, delay: 60, fill: 'backwards' });
+      animate($('hero'), [{ transform: 'translateX(-50%) translateY(-30px) rotate(4deg)', opacity: 0 }, { transform: 'translateX(-50%) rotate(-4deg)', opacity: 1 }], { duration: 650 });
+      animate($('sticker'), [{ transform: 'rotate(-40deg) scale(.4)', opacity: 0 }, { transform: 'rotate(12deg) scale(1)', opacity: 1 }], { duration: 600, delay: 300, fill: 'backwards', easing: 'cubic-bezier(.34,1.56,.64,1)' });
+      animate($('side'), [{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: 500, delay: 120, fill: 'backwards' });
+      animate($('route-line'), [{ strokeDashoffset: 160 }, { strokeDashoffset: 0 }], { duration: 1200 });
+    });
+  </script>
+</body>
+</html>

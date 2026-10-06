@@ -1,11 +1,66 @@
 {
-  "name": "travel-journal-prototype",
+  "name": "travel-journal",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test",
-    "check": "node --check src/trips.js && node --check src/app.js && node --check admin/album-state.js && node --check admin/admin.js",
-    "serve": "python3 -m http.server 4173"
+    "dev": "node ops/prepare-public.mjs && next dev --hostname 127.0.0.1 --port 3100",
+    "serve": "vite --port 4173 --strictPort",
+    "build": "node ops/prepare-public.mjs && prisma generate && next build --webpack",
+    "preview": "next start --hostname 127.0.0.1 --port 3100",
+    "test": "npm run test:legacy && npm run test:unit",
+    "check": "npm run typecheck && npm test && npm run build",
+    "start": "next start --hostname 0.0.0.0 --port 3100",
+    "dev:prototype": "vite",
+    "build:prototype": "vite build",
+    "preview:prototype": "vite preview",
+    "typecheck": "prisma generate && tsc --noEmit",
+    "test:legacy": "node --test tests/*.test.js && vitest run --config vitest.config.js",
+    "test:unit": "vitest run --config vitest.next.config.ts",
+    "test:integration": "tsx --test --test-concurrency=1 tests-next/integration/*.test.ts",
+    "test:e2e": "playwright test",
+    "db:migrate": "prisma migrate deploy",
+    "db:seed": "tsx ops/seed.ts",
+    "admin:create": "tsx ops/admin.ts create",
+    "admin:reset-password": "tsx ops/admin.ts reset",
+    "media:cleanup": "tsx ops/cleanup.ts"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "7.10.0",
+    "@prisma/client": "7.10.0",
+    "argon2": "0.45.1",
+    "busboy": "1.6.0",
+    "dotenv": "17.4.2",
+    "maplibre-gl": "^6.12.0",
+    "next": "16.3.8",
+    "pg": "8.23.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "server-only": "0.0.1",
+    "sharp": "0.35.5",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@testing-library/react": "^16.3.3",
+    "@types/busboy": "1.5.4",
+    "@types/node": "26.6.4",
+    "@types/pg": "8.23.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "jsdom": "^28.1.0",
+    "prisma": "7.10.0",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vite": "^8.3.3",
+    "vitest": "^5.0.3"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "overrides": {
+    "mysql2": "3.24.5",
+    "deepmerge-ts": "8.0.2"
   }
 }

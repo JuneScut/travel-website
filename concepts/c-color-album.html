@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="theme-color" content="#d93d22" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept C · Color Album</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Noto+Serif+SC:wght@500;700;900&family=Fragment+Mono&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #d93d22;          /* kyoto vermilion — swaps per trip */
+    --bg-deep: #a92a14;
+    --fg: #fbefdc;          /* text on --bg */
+    --accent: #ffc24b;
+    --tint: #d93d22;        /* trip color that reads on cream */
+    --cream: #fbefdc;
+    --ink: #22130e;
+    --gold: #ffc24b;
+    --display: 'Fraunces', 'Noto Serif SC', serif;
+    --zh: 'Noto Serif SC', 'Songti SC', serif;
+    --mono: 'Fragment Mono', monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--zh); overflow-x: hidden; }
+  body::after { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: .12; mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  .bar { display: flex; justify-content: space-between; align-items: center; padding: 26px 52px; font: 400 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+  .brand { font: 900 22px/1 var(--zh); letter-spacing: .06em; display: flex; align-items: center; gap: 12px; }
+  .brand i { font: italic 300 24px/1 var(--display); font-variation-settings: 'SOFT' 100, 'WONK' 1; letter-spacing: 0; text-transform: none; }
+  .bar nav { display: flex; gap: 34px; }
+  .bar nav span:first-child { border-bottom: 1.5px solid var(--fg); padding-bottom: 4px; }
+
+  .hero { position: relative; height: 700px; }
+  .outline { position: absolute; left: 0; right: 0; top: 70px; margin: 0; text-align: center; font: 900 330px/1 var(--display); font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1; letter-spacing: -.03em; color: var(--bg-deep); white-space: nowrap; opacity: .55; }
+
+  .left { position: absolute; left: 52px; top: 120px; width: 400px; }
+  .no { font: italic 300 120px/.8 var(--display); font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1; color: var(--accent); }
+  .no small { font: 400 12px/1 var(--mono); letter-spacing: .14em; color: var(--fg); vertical-align: top; margin-left: 6px; }
+  .left h1 { margin: 36px 0 0; font: 900 112px/1 var(--zh); letter-spacing: -.02em; }
+  .left h1 #title { display: block; margin-top: 18px; font: 700 36px/1.25 var(--zh); letter-spacing: .04em; text-wrap: balance; }
+  .left h1 em { display: block; font: italic 400 30px/1.2 var(--display); text-wrap: balance; color: var(--accent); font-variation-settings: 'SOFT' 100, 'WONK' 1; margin-top: 14px; letter-spacing: 0; }
+
+  .right { position: absolute; right: 52px; top: 150px; width: 300px; text-align: left; }
+  .right p { margin: 0; font: 500 17px/2 var(--zh); }
+  .facts { margin-top: 34px; border-top: 1.5px solid color-mix(in srgb, var(--fg) 45%, transparent); }
+  .facts div { display: flex; justify-content: space-between; padding: 13px 0; border-bottom: 1.5px solid color-mix(in srgb, var(--fg) 45%, transparent); font: 400 12px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+  .facts b { font: 400 22px/.7 var(--display); font-variation-settings: 'SOFT' 100; letter-spacing: 0; text-transform: none; }
+
+  /* stamp */
+  .stamp { --r: 8px; background: var(--cream); padding: 24px;
+    -webkit-mask: radial-gradient(var(--r), #0000 97%, #000) round calc(-1.5 * var(--r)) calc(-1.5 * var(--r)) / calc(3 * var(--r)) calc(3 * var(--r)), linear-gradient(#000 0 0) no-repeat 50% / calc(100% - 3 * var(--r)) calc(100% - 3 * var(--r));
+    mask: radial-gradient(var(--r), #0000 97%, #000) round calc(-1.5 * var(--r)) calc(-1.5 * var(--r)) / calc(3 * var(--r)) calc(3 * var(--r)), linear-gradient(#000 0 0) no-repeat 50% / calc(100% - 3 * var(--r)) calc(100% - 3 * var(--r)); }
+  .stamp-face { height: 100%; display: grid; grid-template-rows: minmax(0, 1fr) auto; outline: 1.5px solid var(--ink); outline-offset: -1px; background: var(--ink); }
+  .stamp-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .stamp-cap { background: var(--c, var(--bg)); color: var(--cf, var(--fg)); display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; }
+  .stamp-cap b { font: 400 11px/1 var(--mono); letter-spacing: .2em; }
+  .stamp-cap span { font: 600 44px/.75 var(--display); font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1; }
+
+  .center { position: absolute; left: 50%; top: 40px; width: 400px; height: 540px; transform: translateX(-50%) rotate(-2.5deg); filter: drop-shadow(0 30px 40px rgba(60, 10, 0, .45)) drop-shadow(0 3px 4px rgba(60,10,0,.3)); }
+  .center .stamp { height: 100%; }
+  /* glassine hinge strip */
+  .hinge { position: absolute; left: 50%; top: 360px; width: 560px; height: 150px; transform: translateX(-50%) rotate(-2.5deg); z-index: 2;
+    background: linear-gradient(100deg, rgba(255,255,255,.08) 20%, rgba(255,255,255,.34) 32%, rgba(255,255,255,.1) 40%, rgba(255,255,255,.14) 72%, rgba(255,255,255,.3) 78%, rgba(255,255,255,.08) 86%);
+    border-top: 1px solid rgba(255,255,255,.5); border-bottom: 1px solid rgba(255,255,255,.35); backdrop-filter: blur(.6px) saturate(1.1); }
+
+  .seal { position: absolute; z-index: 3; left: calc(50% + 160px); top: 420px; width: 150px; height: 150px; animation: spin 24s linear infinite; }
+  .seal text { font: 400 12.5px var(--mono); letter-spacing: .2em; fill: var(--accent); }
+  .seal circle { fill: none; stroke: var(--accent); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* album rail */
+  .rail { background: var(--ink); color: var(--cream); padding: 40px 52px 46px; display: grid; grid-template-columns: 240px 1fr; gap: 40px; align-items: center;
+    background-image: radial-gradient(rgba(251,239,220,.06) 1px, transparent 1.4px); background-size: 6px 6px; }
+  .rail-title { font: 400 12px/1.8 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: rgba(251,239,220,.7); }
+  .rail-title b { display: block; font: italic 400 46px/1 var(--display); font-variation-settings: 'SOFT' 100, 'WONK' 1; letter-spacing: -.01em; text-transform: none; color: var(--cream); margin-bottom: 12px; }
+  .rail-stamps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+  .rail-stamps::before { content: ''; position: absolute; left: -10px; right: -10px; top: 58px; height: 74px; background: linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.04) 40%, rgba(255,255,255,.1)); border-top: 1px solid rgba(255,255,255,.18); border-bottom: 1px solid rgba(255,255,255,.12); z-index: 1; }
+  .slot { display: flex; gap: 18px; align-items: center; padding: 0 12px; }
+  .slot .stamp { --r: 4px; padding: 9px; width: 108px; height: 140px; flex: none; }
+  .slot .stamp-cap { padding: 5px 7px; }
+  .slot .stamp-cap b { font-size: 7px; }
+  .slot .stamp-cap span { font-size: 20px; }
+  .slot .stamp-wrap { filter: drop-shadow(0 10px 14px rgba(0,0,0,.5)); transition: transform .4s; }
+  .slot.on .stamp-wrap { transform: translateY(-14px) rotate(-4deg); }
+  .slot h3 { margin: 0; font: 900 24px/1.2 var(--zh); position: relative; z-index: 2; }
+  .slot p { margin: 6px 0 0; font: 400 10px/1.5 var(--mono); letter-spacing: .14em; color: rgba(251,239,220,.65); text-transform: uppercase; position: relative; z-index: 2; }
+  .slot .swatch { display: block; width: 26px; height: 6px; margin-top: 10px; border-radius: 3px; }
+
+  /* next — color handoff preview */
+  .handoff { display: grid; grid-template-columns: 1fr 1fr; min-height: 420px; }
+  .page { background: var(--cream); color: var(--ink); padding: 60px 52px; position: relative; }
+  .page .label { font: 400 12px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--tint); }
+  .page h2 { margin: 18px 0 30px; font: 900 56px/1.1 var(--zh); }
+  .page h2 em { font: italic 400 56px/1 var(--display); font-variation-settings: 'SOFT' 100, 'WONK' 1; color: var(--tint); }
+  .stops { display: flex; gap: 0; border-top: 1.5px solid var(--ink); }
+  .stops div { flex: 1; padding: 18px 14px 0 0; position: relative; }
+  .stops div::before { content: ''; position: absolute; top: -7px; left: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--cream); border: 1.5px solid var(--ink); }
+  .stops div:first-child::before { background: var(--tint); border-color: var(--tint); }
+  .stops strong { display: block; font: 700 22px/1.2 var(--zh); }
+  .stops span { font: 400 11px/2 var(--mono); letter-spacing: .12em; }
+  .next { appearance: none; border: 0; font: inherit; text-align: left; cursor: pointer; background: var(--nbg); color: var(--nfg); padding: 60px 52px; position: relative; overflow: hidden; }
+  .next .label { font: 400 12px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; }
+  .next h2 { margin: 18px 0 0; font: 900 116px/.85 var(--display); font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1; letter-spacing: -.04em; }
+  .next p { font: 700 22px/1 var(--zh); margin: 22px 0 0; }
+  .next .arrow { position: absolute; right: 52px; bottom: 44px; width: 92px; height: 92px; border-radius: 50%; background: var(--nfg); color: var(--nbg); transition: transform 400ms cubic-bezier(.22,1,.36,1); display: grid; place-items: center; font: 400 40px/1 var(--display); }
+  .next .peek { position: absolute; right: 64px; top: 44px; width: 170px; height: 220px; transform: rotate(7deg); filter: drop-shadow(0 18px 20px rgba(19,33,63,.35)); }
+  .next .peek .stamp { height: 100%; --r: 5px; padding: 12px; }
+  .next .peek .stamp-cap { padding: 6px 8px; }
+  .next .peek .stamp-cap span { font-size: 24px; }
+  .slot { appearance: none; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+  .slot:hover .stamp-wrap { transform: translateY(-8px) rotate(3deg); }
+  .slot:focus-visible { outline: 1.5px solid var(--cream); outline-offset: 6px; }
+  .next:hover .arrow { transform: translateX(10px); }
+  .next:focus-visible { outline: 3px solid var(--nfg); outline-offset: -10px; }
+  .outline { transition: color 600ms ease; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+</style>
+</head>
+<body>
+  <header class="bar">
+    <span class="brand">旅迹 <i>a stamp album</i></span>
+    <span id="vol"></span>
+    <nav><span>Journeys</span><span>Album</span><span>Atlas</span></nav>
+  </header>
+
+  <section class="hero">
+    <p class="outline" id="outline" aria-hidden="true"></p>
+
+    <div class="left" id="left">
+      <div class="no"><span id="no"></span><small>/ 04</small></div>
+      <h1><span id="city"></span><span id="title"></span><em id="en"></em></h1>
+    </div>
+
+    <div class="center" id="hero"></div>
+
+    <svg class="seal" viewBox="0 0 150 150" aria-hidden="true">
+      <defs><path id="c" d="M75 75 m-58 0 a58 58 0 1 1 116 0 a58 58 0 1 1 -116 0" /></defs>
+      <circle cx="75" cy="75" r="72" stroke-width="1.5" />
+      <circle cx="75" cy="75" r="40" stroke-width="1" />
+      <text><textPath href="#c" id="seal-ring"></textPath></text>
+      <text x="75" y="82" text-anchor="middle" style="font: italic 400 24px Fraunces; letter-spacing: 0" id="seal-mid"></text>
+    </svg>
+
+    <div class="right" id="right">
+      <p id="desc"></p>
+      <div class="facts">
+        <div><span>Departed</span><b id="departed"></b></div>
+        <div><span>Stops</span><b id="stops-n"></b></div>
+        <div><span>Frames</span><b id="frames"></b></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rail" aria-label="选择旅程">
+    <div class="rail-title"><b>The album</b>Four journeys · ← →</div>
+    <div class="rail-stamps" id="rail"></div>
+  </section>
+
+  <section class="handoff">
+    <div class="page">
+      <p class="label">Route · 足迹</p>
+      <h2>沿途 <em>four stops</em></h2>
+      <div class="stops" id="stops"></div>
+    </div>
+    <button class="next" type="button" id="next">
+      <p class="label">Next journey · 下一枚</p>
+      <h2 id="next-name"></h2>
+      <p id="next-title"></p>
+      <div class="peek" id="peek"></div>
+      <span class="arrow">→</span>
+    </button>
+  </section>
+
+  <script type="module">
+    import { journeys, createSelector, animate, pad, reduceMotion } from './shared.js';
+
+    // Each journey owns the whole page: background, text, accent, and a tint that reads on cream.
+    const themes = {
+      lisbon: { bg: '#f2b21c', deep: '#e09f05', fg: '#13213f', accent: '#c2381f', tint: '#c2381f' },
+      kyoto: { bg: '#d93d22', deep: '#bf3218', fg: '#fbefdc', accent: '#ffc24b', tint: '#d93d22' },
+      iceland: { bg: '#2c5be8', deep: '#2049cf', fg: '#f1f5ff', accent: '#ffe066', tint: '#2c5be8' },
+      paris: { bg: '#5b2a86', deep: '#4c1f74', fg: '#fbeee0', accent: '#ff9e7a', tint: '#5b2a86' },
+    };
+    const $ = (id) => document.getElementById(id);
+    const title = (s) => s[0] + s.slice(1).toLowerCase();
+    const stamp = (t, label) => {
+      const th = themes[t.id];
+      return `<div class="stamp"><div class="stamp-face"><img src="${t.hero}" alt="" /><div class="stamp-cap" style="--c:${th.bg}; --cf:${th.fg}"><b>${label}</b><span>${t.value}</span></div></div></div>`;
+    };
+
+    $('rail').innerHTML = journeys.map((t, i) => `
+      <button class="slot" type="button" data-pick="${i}" aria-label="查看${t.city}">
+        <div class="stamp-wrap">${stamp(t, t.code)}</div>
+        <div><h3>${t.city}</h3><p>${title(t.latin)} · ${t.shortDate.replace('/', '.')}</p><i class="swatch" style="background:${themes[t.id].bg}"></i></div>
+      </button>`).join('');
+
+    // Circular colour wipe that grows out of the stamp you picked.
+    function wipe(update, origin) {
+      if (!document.startViewTransition || reduceMotion) return update();
+      const box = origin?.getBoundingClientRect();
+      const x = box ? box.left + box.width / 2 : innerWidth / 2;
+      const y = box ? box.top + box.height / 2 : innerHeight / 2;
+      const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+      document.startViewTransition(update).ready.then(() => {
+        document.documentElement.animate(
+          { clipPath: [`circle(0 at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
+          { duration: 900, easing: 'cubic-bezier(.7,0,.2,1)', pseudoElement: '::view-transition-new(root)' },
+        );
+      });
+    }
+
+    const selector = createSelector((t, i) => {
+      const th = themes[t.id];
+      const root = document.documentElement.style;
+      root.setProperty('--bg', th.bg);
+      root.setProperty('--bg-deep', th.deep);
+      root.setProperty('--fg', th.fg);
+      root.setProperty('--accent', th.accent);
+      root.setProperty('--tint', th.tint);
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', th.bg);
+
+      $('vol').textContent = `Vol. ${t.date.slice(0, 4)} · ${pad(i + 1)} / ${pad(journeys.length)}`;
+      $('outline').textContent = title(t.latin);
+      $('no').textContent = pad(i + 1);
+      $('city').textContent = t.city;
+      $('title').textContent = t.title;
+      $('en').textContent = t.en;
+      $('hero').innerHTML = stamp(t, t.postal);
+      $('hero').querySelector('img').alt = `${t.city} · ${t.title}`;
+      $('seal-ring').textContent = `${t.latin} · ${t.city} · ${parseFloat(t.lat).toFixed(2)}°N · ${t.date.slice(0, 4)} ·`;
+      $('seal-mid').textContent = t.roman.split(' ').reverse().join('·');
+      $('desc').textContent = t.description;
+      $('departed').textContent = t.posted.slice(0, 6);
+      $('stops-n').textContent = pad(t.route.length);
+      $('frames').textContent = pad(t.gallery.length);
+      $('stops').innerHTML = t.route.map(([place, date]) => `<div><strong>${place}</strong><span>${date}</span></div>`).join('');
+      document.querySelectorAll('.slot').forEach((s, k) => s.classList.toggle('on', k === i));
+
+      const next = journeys[(i + 1) % journeys.length];
+      const nth = themes[next.id];
+      $('next').style.setProperty('--nbg', nth.bg);
+      $('next').style.setProperty('--nfg', nth.fg);
+      $('next').dataset.pick = String((i + 1) % journeys.length);
+      $('next').setAttribute('aria-label', `下一段旅程：${next.city}`);
+      $('next-name').textContent = title(next.latin);
+      $('next-title').textContent = `${next.city} · ${next.title}`;
+      $('peek').innerHTML = stamp(next, next.code);
+
+      animate($('hero'), [{ transform: 'translateX(-50%) translateY(60px) rotate(8deg) scale(.92)', opacity: 0 }, { transform: 'translateX(-50%) rotate(-2.5deg)', opacity: 1 }], { duration: 900, delay: 250, fill: 'backwards' });
+      animate($('left'), [{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 350, fill: 'backwards' });
+      animate($('right'), [{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 450, fill: 'backwards' });
+    }, { transition: wipe });
+
+    $('next').addEventListener('click', () => selector.select(Number($('next').dataset.pick)));
+  </script>
+</body>
+</html>

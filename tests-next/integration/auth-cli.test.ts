@@ -1,0 +1,33 @@
+import { test, after } from 'node:test';
+import assert from 'node:assert/strict';
+import { randomBytes, createHash } from 'node:crypto';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { readFile, writeFile } from 'node:fs/promises';
+import argon2 from 'argon2';
+import { db } from '../../server/db';
+import { currentAdmin } from '../../server/auth';
+
+if (!process.env.DATABASE_URL || new URL(process.env.DATABASE_URL).pathname !== '/journal_test') throw new Error('认证测试只能使用 journal_test');
+after(async () => { await db.$disconnect(); });
+test('sessions expire after inactivity and CLI reset revokes every session', async () => {
+  const credentials = JSON.parse(await readFile('.data/test-credentials.json', 'utf8'));
+  const admin = await db.adminUser.findUniqueOrThrow({ where: { username: credentials.username } });
+  const token = randomBytes(32).toString('base64url');
+  const tokenHash = createHash('sha256').update(token).digest('hex');
+  const session = await db.session.create({ data: { adminId: admin.id, tokenHash, expiresAt: new Date(Date.now() + 86400000), lastActiveAt: new Date(Date.now() - 25 * 3600000) } });
+  assert.equal(await currentAdmin(token), null);
+  await db.session.update({ where: { id: session.id }, data: { lastActiveAt: new Date() } });
+  assert.equal((await currentAdmin(token))?.id, admin.id);
+  const password = randomBytes(24).toString('base64url');
+  const exec = promisify(execFile);
+  const environment = { ...process.env, ADMIN_PASSWORD: password };
+  await exec(process.execPath, ['--import', 'tsx', 'ops/admin.ts', 'reset', credentials.username], { env: environment });
+  assert.equal(await db.session.count({ where: { adminId: admin.id } }), 0);
+  assert.equal(await currentAdmin(token), null);
+  const changed = await db.adminUser.findUniqueOrThrow({ where: { id: admin.id } });
+  assert.equal(await argon2.verify(changed.passwordHash, password), true);
+  await assert.rejects(() => exec(process.execPath, ['--import', 'tsx', 'ops/admin.ts', 'create', 'second-admin'], { env: environment }));
+  assert.equal(await db.adminUser.count(), 1);
+  await writeFile('.data/test-credentials.json', JSON.stringify({ ...credentials, password }), { mode: 0o600 });
+});

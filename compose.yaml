@@ -1,0 +1,78 @@
+name: travel-journal
+services:
+  postgres:
+    image: postgres:17.9-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: journal
+      POSTGRES_DB: journal
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - ${DATA_ROOT:-/srv/travel-journal}/postgres:/var/lib/postgresql/data
+    networks: [internal]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U journal -d journal"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    logging: &logging
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+  web:
+    image: travel-journal:${APP_VERSION:?Set APP_VERSION}
+    build: { context: ., target: runner }
+    restart: unless-stopped
+    environment: &appenv
+      DATABASE_URL: postgresql://journal:${POSTGRES_PASSWORD}@postgres:5432/journal
+      APP_ORIGIN: ${APP_ORIGIN:?Set APP_ORIGIN}
+      COOKIE_SECURE: "true"
+      TRUST_PROXY: "true"
+      MEDIA_ROOT: /data/media
+      RUNTIME_ROOT: /data/runtime
+      APP_VERSION: ${APP_VERSION}
+    volumes: &appvolumes
+      - ${DATA_ROOT:-/srv/travel-journal}/media:/data/media
+      - ${DATA_ROOT:-/srv/travel-journal}/runtime:/data/runtime
+    networks: [internal]
+    depends_on:
+      postgres: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    logging: *logging
+  proxy:
+    image: nginx:1.28.2-alpine
+    restart: unless-stopped
+    ports: ["${HTTP_PORT:-80}:80", "${HTTPS_PORT:-443}:443"]
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN}
+      APP_ORIGIN: ${APP_ORIGIN:?Set APP_ORIGIN}
+      NGINX_ENVSUBST_FILTER: '^(DOMAIN|APP_ORIGIN)$$'
+    volumes:
+      - ./ops/nginx/site.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ${DATA_ROOT:-/srv/travel-journal}/certificates:/etc/nginx/certificates:ro
+    networks: [internal, outbound]
+    depends_on: [web]
+    logging: *logging
+  ops:
+    image: travel-journal-ops:${APP_VERSION}
+    build: { context: ., target: ops }
+    profiles: [tools]
+    environment:
+      <<: *appenv
+      PGHOST: postgres
+      PGUSER: journal
+      PGDATABASE: journal
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ${DATA_ROOT:-/srv/travel-journal}/media:/data/media
+      - ${DATA_ROOT:-/srv/travel-journal}/runtime:/data/runtime
+      - ${DATA_ROOT:-/srv/travel-journal}/backups:/backups
+    networks: [internal]
+    logging: *logging
+networks:
+  internal:
+    internal: true
+  outbound:

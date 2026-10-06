@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>旅迹 · 界面方案对比</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;900&family=Fragment+Mono&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #16161a; --fg: #f3efe7; --dim: #9a968e; --line: rgba(243,239,231,.14); --mono: 'Fragment Mono', monospace; --zh: 'Noto Serif SC', serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--zh); }
+  header { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 18px 40px; background: rgba(22,22,26,.88); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  header h1 { margin: 0; font: 900 22px/1 var(--zh); }
+  header h1 small { font: 400 11px/1 var(--mono); letter-spacing: .14em; color: var(--dim); margin-left: 12px; }
+  .trips { display: flex; gap: 6px; align-items: center; font: 400 11px/1 var(--mono); letter-spacing: .1em; color: var(--dim); }
+  .trips button { appearance: none; border: 1px solid var(--line); background: none; color: var(--fg); font: 500 14px/1 var(--zh); padding: 10px 14px; border-radius: 99px; cursor: pointer; }
+  .trips button[aria-pressed='true'] { background: var(--fg); color: var(--bg); }
+  main { padding: 20px 40px 80px; }
+  .concept { display: grid; grid-template-columns: 300px 1fr; gap: 40px; padding: 40px 0; border-bottom: 1px solid var(--line); }
+  .info .tag { font: 400 11px/1 var(--mono); letter-spacing: .16em; color: var(--dim); }
+  .info h2 { margin: 14px 0 6px; font: 900 34px/1.15 var(--zh); }
+  .info h2 span { display: block; font: 400 13px/1.6 var(--mono); letter-spacing: .08em; color: var(--dim); margin-top: 6px; }
+  .info p { margin: 18px 0 0; font: 500 15px/1.9 var(--zh); color: #d9d4ca; }
+  .swatches { display: flex; gap: 6px; margin-top: 22px; }
+  .swatches i { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); }
+  dl { margin: 22px 0 0; display: grid; grid-template-columns: 56px 1fr; gap: 8px 12px; font: 400 12px/1.6 var(--mono); }
+  dt { color: var(--dim); }
+  dd { margin: 0; }
+  .open { display: inline-flex; margin-top: 26px; padding: 12px 18px; border-radius: 99px; background: var(--fg); color: var(--bg); font: 500 14px/1 var(--zh); text-decoration: none; }
+  .open:hover { background: #fff; }
+  .frame { position: relative; width: 100%; aspect-ratio: 1440 / 900; border-radius: 10px; overflow: hidden; background: #000; box-shadow: 0 30px 60px -20px rgba(0,0,0,.6); }
+  .frame iframe { position: absolute; left: 0; top: 0; width: 1440px; height: 900px; border: 0; transform-origin: 0 0; }
+  .hint { margin-top: 10px; font: 400 11px/1.6 var(--mono); color: var(--dim); letter-spacing: .06em; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>旅迹 · 三个界面方向<small>CLICK STAMPS OR ← → INSIDE EACH PREVIEW</small></h1>
+    <div class="trips" role="group" aria-label="三个方案同步切换旅程">
+      同步切换
+      <button type="button" data-trip="lisbon">里斯本</button>
+      <button type="button" data-trip="kyoto" aria-pressed="true">京都</button>
+      <button type="button" data-trip="iceland">冰岛</button>
+      <button type="button" data-trip="paris">巴黎</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="concept">
+      <div class="info">
+        <p class="tag">方案 A</p>
+        <h2>航空邮简<span>PAR AVION</span></h2>
+        <p>信封纸底色、海军蓝墨水、红蓝航空斜纹。主邮票压着邮戳，旅程选择是一排四枚邮票，旅行文字写在航空信纸上。最克制、最有叙事感。</p>
+        <div class="swatches"><i style="background:#f4ead8"></i><i style="background:#1a2150"></i><i style="background:#e2392b"></i><i style="background:#2348c6"></i><i style="background:#f2b43a"></i><i style="background:#7a4fb0"></i></div>
+        <dl><dt>标题</dt><dd>Noto Serif SC Black</dd><dt>英文</dt><dd>Instrument Serif Italic</dd><dt>细节</dt><dd>Courier Prime</dd><dt>动效</dt><dd>邮票落下 · 盖戳</dd></dl>
+        <a class="open" href="./a-par-avion.html" target="_blank">全屏打开 →</a>
+      </div>
+      <div><div class="frame"><iframe data-src="./a-par-avion.html" title="方案 A 预览"></iframe></div><p class="hint">预览已缩放，往下滚动可以看到信纸区域</p></div>
+    </section>
+
+    <section class="concept">
+      <div class="info">
+        <p class="tag">方案 B</p>
+        <h2>孔版图集<span>RISO ATLAS</span></h2>
+        <p>Risograph（孔版）印刷风格：荧光粉、孔版蓝、太阳黄叠印，照片做成双色印刷，用来解决原照片偏灰暗的问题。超大错版英文标题，中文竖排。最大胆、最有艺术杂志感。</p>
+        <div class="swatches"><i style="background:#f4efe4"></i><i style="background:#ff4fa8"></i><i style="background:#1f57d6"></i><i style="background:#ffd43b"></i><i style="background:#00a28a"></i><i style="background:#6a2bb0"></i></div>
+        <dl><dt>标题</dt><dd>Gloock + Noto Serif SC</dd><dt>细节</dt><dd>IBM Plex Mono</dd><dt>动效</dt><dd>分色套印入场 · 路线描线</dd></dl>
+        <a class="open" href="./b-riso-atlas.html" target="_blank">全屏打开 →</a>
+      </div>
+      <div><div class="frame"><iframe data-src="./b-riso-atlas.html" title="方案 B 预览"></iframe></div><p class="hint">每段旅程有自己的双色油墨组合</p></div>
+    </section>
+
+    <section class="concept">
+      <div class="info">
+        <p class="tag">方案 C · 推荐</p>
+        <h2>彩色集邮册<span>COLOR ALBUM</span></h2>
+        <p>每段旅程占据一整屏颜色：京都朱红、里斯本电车黄、冰岛钴蓝、巴黎紫。切换时，新颜色从你点的那枚邮票圆形扩散开。照片保持原色，邮票插在深色集邮册的透明护邮条里。</p>
+        <div class="swatches"><i style="background:#d93d22"></i><i style="background:#f2b21c"></i><i style="background:#2c5be8"></i><i style="background:#5b2a86"></i><i style="background:#fbefdc"></i><i style="background:#22130e"></i></div>
+        <dl><dt>标题</dt><dd>Fraunces (SOFT/WONK) + Noto Serif SC</dd><dt>细节</dt><dd>Fragment Mono</dd><dt>动效</dt><dd>整屏圆形换色 · 邮戳旋转</dd></dl>
+        <a class="open" href="./c-color-album.html" target="_blank">全屏打开 →</a>
+      </div>
+      <div><div class="frame"><iframe data-src="./c-color-album.html" title="方案 C 预览"></iframe></div><p class="hint">点击下方集邮册里的邮票，看整屏换色</p></div>
+    </section>
+  </main>
+
+  <script>
+    const frames = [...document.querySelectorAll('iframe')];
+    const fit = () => frames.forEach((f) => { f.style.transform = `scale(${f.parentElement.clientWidth / 1440})`; });
+    const load = (trip) => frames.forEach((f) => { f.src = `${f.dataset.src}?trip=${trip}`; });
+
+    document.querySelectorAll('[data-trip]').forEach((b) => b.addEventListener('click', () => {
+      document.querySelectorAll('[data-trip]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      load(b.dataset.trip);
+    }));
+    addEventListener('resize', fit);
+    fit();
+    load('kyoto');
+  </script>
+</body>
+</html>

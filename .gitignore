@@ -1,6 +1,10 @@
 # Dependencies and build output
 node_modules/
 .next/
+.next-dev/
+generated/
+public/map-worker.js
+*.tsbuildinfo
 dist/
 coverage/
 playwright-report/
@@ -29,4 +33,3 @@ backups/
 # Local worktrees
 .worktrees/
 worktrees/
-

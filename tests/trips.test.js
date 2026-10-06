@@ -32,3 +32,14 @@ test('provides valid map coordinates for every destination', () => {
   }
   assert.deepEqual(getTripById('kyoto').geo, { latitude: 35.0116, longitude: 135.7681 });
 });
+
+test('every route station has valid coordinates without changing the album tuple API', () => {
+  for (const trip of trips) {
+    for (const [name, date, geo] of trip.route) {
+      assert.equal(typeof name, 'string');
+      assert.match(date, /^\d{2}\.\d{2}$/);
+      assert.ok(Number.isFinite(geo.latitude) && Math.abs(geo.latitude) <= 90);
+      assert.ok(Number.isFinite(geo.longitude) && Math.abs(geo.longitude) <= 180);
+    }
+  }
+});
