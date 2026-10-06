@@ -1,10 +1,16 @@
-.PHONY: dev db-up build deploy bootstrap smoke backup restore rollback migrate admin-create admin-reset-password seed cleanup remote-deploy
+.PHONY: dev db-up build deploy bootstrap smoke backup restore rollback migrate admin-create admin-reset-password seed cleanup remote-deploy prepare-vps caddy-install install-vps
 dev:
 	npm run dev
 db-up:
 	docker compose -f compose.dev.yaml -p journal-development up -d
 build:
-	docker compose --env-file $(or $(ENV_FILE),.env.production) build web ops
+	bash -c 'source ops/common.sh; compose build web && compose build ops'
+prepare-vps:
+	node ops/prepare-vps.mjs
+caddy-install:
+	bash ops/install-caddy.sh
+install-vps:
+	bash ops/install-vps.sh
 bootstrap:
 	bash ops/bootstrap.sh
 deploy:

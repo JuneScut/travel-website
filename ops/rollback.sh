@@ -9,8 +9,7 @@ export APP_VERSION="$previous"
 docker image inspect "travel-journal:$previous" >/dev/null
 compose up -d web
 health
-compose up -d --force-recreate proxy
-compose exec -T proxy nginx -t
+refresh_proxy
 persist_version "$previous"
 printf '%s\n' "$previous" > "$root/runtime/current-version"
 printf '%s\n' "$current" > "$root/runtime/previous-version"

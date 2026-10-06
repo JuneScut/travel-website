@@ -4,6 +4,7 @@ node_modules/
 .next-dev/
 generated/
 public/map-worker.js
+public/maplibre-gl-shared.mjs
 *.tsbuildinfo
 dist/
 coverage/
@@ -12,7 +13,7 @@ test-results/
 
 # Local runtime data
 .data/
-uploads/
+/uploads/
 backups/
 *.sqlite
 *.sqlite3
@@ -22,6 +23,7 @@ backups/
 .env.*
 !.env.example
 !.env.production.example
+!.env.production.vps.example
 *.pem
 *.key
 

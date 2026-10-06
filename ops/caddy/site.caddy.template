@@ -1,0 +1,24 @@
+http://__DOMAIN__ {
+	redir https://__DOMAIN__{uri} permanent
+}
+
+https://__DOMAIN__ {
+	encode zstd gzip
+	request_body {
+		max_size 151MiB
+	}
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+		Strict-Transport-Security "max-age=31536000"
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://tiles.openfreemap.org; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+		-Server
+	}
+	reverse_proxy 127.0.0.1:__WEB_PORT__ {
+		header_up X-Real-IP {remote_host}
+		transport http {
+			response_header_timeout 180s
+		}
+	}
+}

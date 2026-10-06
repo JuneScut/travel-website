@@ -12,15 +12,14 @@ compose up -d postgres
 compose run --rm -T ops bash ops/archive-inner.sh verify "/backups/$name"
 touch "$root/runtime/read-only"
 trap 'rm -f "$root/runtime/read-only"' EXIT
-compose stop proxy web
+stop_public_services
 compose up -d postgres
 compose run --rm -T ops bash ops/archive-inner.sh restore "/backups/$name"
 compose run --rm -T ops npx prisma migrate deploy
 rm -f "$root/runtime/read-only"
 compose up -d web
 health
-compose up -d --force-recreate proxy
-compose exec -T proxy nginx -t
+refresh_proxy
 get_setting APP_VERSION > "$root/runtime/current-version"
 printf "\n" >> "$root/runtime/current-version"
 echo '恢复完成，健康检查通过。'

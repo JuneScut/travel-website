@@ -27,7 +27,11 @@ EXPOSE 3000
 CMD ["node", "server.js"]
 
 FROM maintenance-tools AS ops
-COPY --from=builder --chown=node:node /app ./
+# Keep maintenance source and Prisma's generated client, without duplicating
+# node_modules or shipping Next.js output and its build cache.
+COPY --chown=node:node . .
+COPY --from=builder --chown=node:node /app/generated ./generated
+RUN chown node:node /app /app/node_modules
 USER node
 ENV NODE_ENV=production MEDIA_ROOT=/data/media RUNTIME_ROOT=/data/runtime
 CMD ["sh"]

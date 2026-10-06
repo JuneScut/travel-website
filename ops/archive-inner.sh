@@ -9,6 +9,7 @@ if [[ "$mode" = backup ]]; then
   pg_dump --format=custom --no-owner --file="$work/database.dump"
   cp -a /data/media/live /data/media/trash "$work/media/"
   cp /app/compose.yaml /app/.env.production.example "$work/"
+  cp /app/compose.vps.yaml /app/.env.production.vps.example "$work/"
   cp -a /app/prisma/migrations "$work/migrations"
   printf '%s\n' "$APP_VERSION" > "$work/app-version"
   psql -Atc 'SELECT count(*) FROM "Journey"' > "$work/journey-count"

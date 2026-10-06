@@ -9,7 +9,7 @@ finish() {
     # A fresh container drops the public data cache populated before this explicit import.
     compose up -d --force-recreate web
     health
-    compose up -d --force-recreate proxy
+    refresh_proxy
   fi
 }
 trap finish EXIT

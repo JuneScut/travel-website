@@ -1,0 +1,71 @@
+name: Deploy master to VPS
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Never interrupt a running production migration/deployment.
+concurrency:
+  group: travel-journal-production
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 24.14.0
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  deploy:
+    needs: verify
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Deploy the exact tested commit
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_PORT: ${{ secrets.VPS_SSH_PORT }}
+          VPS_SSH_USER: ${{ secrets.VPS_SSH_USER }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          umask 077
+          key="$RUNNER_TEMP/travel-deploy-key"
+          hosts="$RUNNER_TEMP/travel-deploy-known-hosts"
+          trap 'rm -f -- "$key" "$hosts"' EXIT
+          printf '%s\n' "$VPS_SSH_KEY" > "$key"
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > "$hosts"
+          git archive --format=tar.gz "$GITHUB_SHA" |
+            ssh -T -i "$key" -p "$VPS_SSH_PORT" \
+              -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+              -o UserKnownHostsFile="$hosts" -o ConnectTimeout=20 \
+              -o ServerAliveInterval=15 -o ServerAliveCountMax=4 \
+              "$VPS_SSH_USER@$VPS_HOST" "deploy $GITHUB_SHA"
+      - name: Verify public HTTPS and release version
+        run: |
+          curl --fail --silent --show-error --retry 5 --retry-all-errors --max-time 20 \
+            https://travel.elenacc.org/api/health |
+            EXPECTED_VERSION="ci-${GITHUB_SHA:0:12}" node -e '
+              const result = JSON.parse(require("node:fs").readFileSync(0, "utf8"));
+              if (result.status !== "ok" || result.version !== process.env.EXPECTED_VERSION) process.exit(1);
+              console.log("HTTPS health and release version verified:", result.version);
+            '

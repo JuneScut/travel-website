@@ -39,7 +39,68 @@ npm run media:cleanup
 
 清理是手动命令：重试尚未完成的回收移动，移除 30 天前的回收数据、24 小时前的暂存与失败上传。不配置定时任务。
 
-## VPS 首次部署
+## 本 VPS：复用现有 Caddy
+
+本机使用 `travel.elenacc.org`，DNS 的 A 记录指向 `23.95.140.120`，初期使用 DNS Only。现有 Caddy 已占用 80/443，应用使用 `PROXY_MODE=caddy` 和 `compose.vps.yaml`；web 仅发布 `127.0.0.1:3100`，数据库仅连接内部 Docker 网络。Caddy 会覆盖 `X-Real-IP`，HTTPS 和证书续期由宿主机现有服务管理。
+
+在当前源码目录执行：
+
+```sh
+make prepare-vps           # 仅生成项目内配置，不启动容器
+make install-vps           # 需要服务器写权限、Docker socket 和网络访问
+```
+
+准备命令生成 `.env.production`（0600）、`.data/deploy/travel-journal.caddy` 和 `.data/deploy/admin-password`。重复执行保留已有数据库密码、管理员初始密码和应用版本。默认初始管理员用户名为 `admin`，账号在安装时创建；准备命令本身不创建账号。
+
+安装命令将代码复制到 `/srv/travel-journal/app`，依次初始化目录、串行构建两个镜像、迁移数据库、创建管理员、导入现有旅程与图片、接入 Caddy、制作一致性备份，并检查域名 HTTPS、首页及登录页。部署入口不会在缺少域名证书时阻塞应用构建。后续在生产目录执行 `make deploy`，更改域名或端口后执行 `make caddy-install`。
+
+| 内容 | 宿主机路径 | 容器内路径 |
+| --- | --- | --- |
+| 代码与生产配置 | `/srv/travel-journal/app`、其中的 `.env.production` | `/app`、环境变量 |
+| PostgreSQL 17 数据 | `/srv/travel-journal/postgres` | `/var/lib/postgresql/data` |
+| 原图与派生图片 | `/srv/travel-journal/media`（live/trash/staging） | `/data/media` |
+| 版本和维护状态 | `/srv/travel-journal/runtime` | `/data/runtime` |
+| 数据库与图片备份 | `/srv/travel-journal/backups` | `/backups` |
+
+Caddy 安装命令先生成候选配置、校验，再更新 `/etc/caddy/Caddyfile` 中独立标记的管理区块。现有站点内容保留；原配置备份在 `runtime/Caddyfile.before-*`，重载失败会还原。证书保存在现有 Caddy 数据目录 `/var/lib/caddy/.local/share/caddy/certificates/`。备份不包含生产密钥或管理员初始密码文件，需另行妥善保存。
+
+运维脚本回归测试不需要启动 Docker 或安装 npm 依赖：
+
+```sh
+node --test tests/deployment-ops.test.js
+```
+
+## master 推送自动部署
+
+仓库 `JuneScut/travel-website` 使用 `.github/workflows/deploy-master.yml`：推送 `master` 后，GitHub Actions 先安装依赖、检查 TypeScript、运行测试并构建，再通过专用 SSH 密钥将同一提交的 `git archive` 发送至 VPS，串行构建 Docker 镜像、迁移数据库和更新应用。成功后验证公网 HTTPS 与版本号 `ci-<提交前 12 位>`。也可在 Actions 页面手动运行该工作流；只有 `master` 会发布。
+
+GitHub CLI 已安装在本 VPS。查看与等待发布：
+
+```sh
+gh run list --repo JuneScut/travel-website --workflow deploy-master.yml --branch master
+gh run watch <run-id> --repo JuneScut/travel-website --exit-status
+gh workflow run deploy-master.yml --repo JuneScut/travel-website --ref master
+```
+
+仓库 Actions Secrets 使用以下名称。私钥通过 `gh secret set VPS_SSH_KEY --repo JuneScut/travel-website <私钥文件>` 写入，不提交 Git，也不打印到日志。
+
+| Secret | 用途 |
+| --- | --- |
+| `VPS_HOST` | `23.95.140.120` |
+| `VPS_SSH_PORT` | `7529` |
+| `VPS_SSH_USER` | `travel-deploy` |
+| `VPS_SSH_KEY` | 独立 Ed25519 私钥，不使用管理员密码 |
+| `VPS_KNOWN_HOSTS` | 从 VPS 本机公钥生成的固定主机身份，严格校验 |
+
+VPS 的 `travel-deploy` 是锁定密码的机器账号，公钥使用 `restrict` 和强制命令 `/usr/local/libexec/travel-journal/ssh-entry.sh`，不允许通用 SSH 命令、终端或转发。该账号只能通过 sudo 调用无参数的 `receive-deploy.sh`；部署入口、授权密钥和 sudoers 文件由 root 管理。安装目录还包含 `extract-source.py`，三个文件的源码在 `ops/ci/`，更新这些入口需要服务器管理员显式安装，工作流不会自行覆盖它们。
+
+发布包检查提交标识、大小与路径，拒绝软链接、私钥、生产环境文件及持久化数据目录。源码同步及部署共用 `/srv/travel-journal/runtime/ops.lock`，已有部署或备份运行时不会改动源码；GitHub 也不会中断正在运行的发布。多次快速推送可能合并等待中的发布，以最新提交为准。
+
+生产 `.env.production`、管理员密码文件、数据库、图片和备份保留在上表所列 VPS 路径中；不会因推送被覆盖或重新初始化。测试或镜像构建失败不切换现有应用；应用健康检查失败会尝试回到上一镜像，并恢复发布前源码。**数据库迁移不会自动回退**，不兼容迁移应事先备份并安排维护窗口。
+
+注意：`master` 中的代码最终会由服务器部署入口执行，拥有写入 `master` 的权限等同于具有生产发布权限。建议限制该分支写入者并保护 GitHub 账号。当前仅保留旧项目镜像供回滚，不自动清理其他容器或全局 Docker 缓存；磁盘不足会拒绝发布，需要管理员审查后清理本项目的旧构建。定时、异地备份仍未配置。
+
+## VPS 首次部署：独立 Nginx 入口
 
 推荐 Ubuntu / Debian，2 vCPU、4 GB 内存，照片容量至少三倍的可用磁盘。服务器安装 Docker Engine、Compose、Python 3、rsync、SSH、flock；不需要安装应用 Node.js 或 PostgreSQL。
 

@@ -1,0 +1,9 @@
+# Used with compose.yaml when PROXY_MODE=caddy (Compose 2.24.4+).
+services:
+  web:
+    ports:
+      - "127.0.0.1:${WEB_PORT:-3100}:3000"
+    networks: [internal, outbound]
+  proxy:
+    profiles: [bundled-proxy]
+    ports: !reset []
